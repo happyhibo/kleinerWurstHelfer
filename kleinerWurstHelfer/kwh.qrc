@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="kwh">
+    <qresource prefix="/KWH">
+        <file>kwh_icon.ico</file>
     </qresource>
 </RCC>

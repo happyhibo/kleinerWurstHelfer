@@ -36,9 +36,48 @@
     <ClCompile Include="kwh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="berechnungen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="errormessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="kwh_zusammenfassung.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mydialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mynewdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="myqdoublespinbox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="myqspinbox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_kwh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="kwh.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="errormessage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="mydialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="mynewdialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="myqdoublespinbox.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="myqspinbox.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -46,10 +85,58 @@
     <QtUic Include="kwh.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="mydebugwindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="mydialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="mynewdialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="kwh.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="berechnungen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="connect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="definitionen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_kwh.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_mydebugwindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_mydialog.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_mynewdialog.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="KWH.APS" />
+    <None Include="kwh.ui.org" />
+    <None Include="kwh_daten_vorlage.sql" />
+    <None Include="kwh_db_vorlage.s3db" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="KWH.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="kwh_icon.ico" />
+    <Image Include="kwh_icon.png" />
   </ItemGroup>
 </Project>
