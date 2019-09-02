@@ -5,13 +5,13 @@
 --
 
 -- Table: darmliste
-CREATE TABLE darmliste (ID INTEGER NOT NULL PRIMARY KEY, d_art TEXT, d_einheit TEXT, d_preis_p_einh DECIMAL (5,3));
+CREATE TABLE darmliste (ID INTEGER NOT NULL PRIMARY KEY, d_art TEXT, d_einheit TEXT, d_preis_p_einh DECIMAL (5,3), d_durchmesser INTEGER);
 
-INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh) VALUES (1, '', '', '');
-INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh) VALUES (2, 'kein Darm', '', '');
-INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh) VALUES (3, 'Schafsaitling 20/22', '4', 0.23);
-INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh) VALUES (4, 'Schafsaitling 22/24', '4', 0.26);
-INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh) VALUES (5, 'Schafsaitling 24/26', '4', 0.32);
+INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh, d_durchmesser) VALUES (1, '', '', '', '');
+INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh, d_durchmesser) VALUES (2, 'kein Darm', '', '', '');
+INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh, d_durchmesser) VALUES (3, 'Schafsaitling 20/22', '4', 0.23, 21);
+INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh, d_durchmesser) VALUES (4, 'Schafsaitling 22/24', '4', 0.26, 23);
+INSERT INTO darmliste (ID, d_art, d_einheit, d_preis_p_einh, d_durchmesser) VALUES (5, 'Schafsaitling 24/26', '4', 0.32, 25);
 
 -- Table: einheiten
 CREATE TABLE einheiten (ID INTEGER NOT NULL PRIMARY KEY, e_name TEXT, e_kurzzeichen TEXT);

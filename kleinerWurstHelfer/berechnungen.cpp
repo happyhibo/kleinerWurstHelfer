@@ -1,6 +1,10 @@
 ﻿#include "berechnungen.h"
 #include <QtGlobal>
 
+Qberechnungen::Qberechnungen() {
+
+}
+
 
 double Qberechnungen::ber_Fleischanteil(double Menge_braet, double Anteil_Prozent)
 {
@@ -25,6 +29,3 @@ double Qberechnungen::ber_Kostenanteil(double Menge, double Preis_p_Einheit)
 
 
 
-Qberechnungen::Qberechnungen() {
-	
-}

@@ -184,7 +184,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="KWH.APS" />
-    <None Include="kwh.ui.org" />
     <None Include="kwh_daten_vorlage.sql" />
     <None Include="kwh_db_vorlage.s3db" />
   </ItemGroup>
