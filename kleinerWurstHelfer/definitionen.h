@@ -2,7 +2,7 @@
 #define DEFINITION
 
 // comment this line for release build
-//#define DEBUG true
+#define DEBUG true
 
 //Datenbankvorlage
 #define DB_VORLAGE		"kwh_db_vorlage.s3db"

@@ -77,7 +77,6 @@ INSERT INTO wurstarten (ID, w_wurstart) VALUES (2, 'Rohwurst');
 INSERT INTO wurstarten (ID, w_wurstart) VALUES (3, 'Grillwurst');
 INSERT INTO wurstarten (ID, w_wurstart) VALUES (4, 'Kochwurst');
 INSERT INTO wurstarten (ID, w_wurstart) VALUES (5, 'Brühwurst');
-INSERT INTO wurstarten (ID, w_wurstart) VALUES (6, 'äöü');
 
 -- Table: zutatenliste_fleisch
 CREATE TABLE zutatenliste_fleisch (ID INTEGER NOT NULL PRIMARY KEY, zlf_name TEXT, zlf_fettanteil DECIMAL (5,2), zlf_verschnitt INTEGER, zlf_einheit TEXT, zlf_preis_p_einh DECIMAL (5,3));

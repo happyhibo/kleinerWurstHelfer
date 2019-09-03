@@ -45,9 +45,6 @@
     <ClCompile Include="kwh_zusammenfassung.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mydialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mynewdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,15 +57,15 @@
     <ClCompile Include="GeneratedFiles\qrc_kwh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="myqcombobox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="kwh.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="errormessage.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="mydialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="mynewdialog.h">
@@ -78,6 +75,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="myqspinbox.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="myqcombobox.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

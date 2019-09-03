@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef KWH_H
 #define KWH_H
 
@@ -24,14 +24,16 @@
 #include <qmetaobject.h>
 #include <qspinbox.h>
 #include <qsqlquerymodel.h>
-//#include "mydialog.h"
-//#include "ui_mydialog.h"
+#include "myqcombobox.h"
 #include <qtabwidget.h>
 #include <qfiledialog.h>
 #include <qdiriterator.h>
 #include <qurl.h>
 #include <qdesktopservices.h>
 #include <qprinter.h>
+#include <qmenu.h>
+#include <qmenubar.h>
+#include <qaction.h>
 
 
 class KWH : public QMainWindow, public Ui::KWHClass
@@ -57,8 +59,14 @@ private:
 	void schreibeRezeptPosGewuerze(QString aktID);
 	void schreibeRezeptPosZubereitung(QString aktID);
 	void erstelleRezeptVorschau2();
+	void erstelleAktionen();
+	void erstelleMenue();
 	Qberechnungen Berechnung;
 	QIcon kwh_icon;
+	//QMenu *MenueDatei;
+	//QMenu *MenueExtras;
+	//QAction *ActExit;
+	//QAction *ActEinstellungen;
 
 
 private slots:
@@ -88,6 +96,8 @@ private slots:
 	void changeEintragFleisch(int row, int col);
 	void changeEintragGewuerz(int row, int col);
 	void changeEintragDarm(int row, int col);
+
+	void oeffneEinstellungen();
 
 	void slot_itemchanged();
 	void slot_pushButton_Rezept_anlegen_clicked();

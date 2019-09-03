@@ -3,7 +3,10 @@
 
 KWH::KWH(QWidget* parent) : QMainWindow(parent)
 {
+
 	setupUi(this);
+	erstelleAktionen();
+	erstelleMenue();
 	initUi();
 	ladeZutatenlisten();
 	fuelleRezeptauswahl();
@@ -20,6 +23,8 @@ KWH::KWH(QWidget* parent) : QMainWindow(parent)
 	connect(tableWidget_Zutaten_Fleisch, &QTableWidget::cellDoubleClicked, this, &KWH::changeEintragFleisch);
 	connect(tableWidget_Zutaten_Gewuerze, &QTableWidget::cellDoubleClicked, this, &KWH::changeEintragGewuerz);
 	connect(tableWidget_Zutaten_Darm, &QTableWidget::cellDoubleClicked, this, &KWH::changeEintragDarm);
+	connect(actionEinstellungen, &QAction::triggered, this, &KWH::oeffneEinstellungen);
+	connect(actionExit, &QAction::triggered, qApp, QApplication::quit);
 }
 
 KWH::~KWH()
@@ -432,7 +437,7 @@ void KWH::NeueZeileFleisch(int id, int menge_prozent, int verarbeitung) {
 	model_zutat->setHeaderData(4, Qt::Horizontal, "zlf_einheit");
 	model_zutat->setHeaderData(5, Qt::Horizontal, "zlf_preis_p_einh");
 
-	QComboBox* comboBox_Zutat = new QComboBox();
+	MyQComboBox* comboBox_Zutat = new MyQComboBox();
 	comboBox_Zutat->clear();
 	comboBox_Zutat->setModel(model_zutat);
 	comboBox_Zutat->setModelColumn(1);
@@ -483,7 +488,7 @@ void KWH::NeueZeileFleisch(int id, int menge_prozent, int verarbeitung) {
 	model_verarb->setHeaderData(0, Qt::Horizontal, "ID");
 	model_verarb->setHeaderData(1, Qt::Horizontal, "v_art");
 
-	QComboBox* comboBox_Verarb = new QComboBox();
+	MyQComboBox* comboBox_Verarb = new MyQComboBox();
 	comboBox_Verarb->clear();
 	comboBox_Verarb->setModel(model_verarb);
 	comboBox_Verarb->setModelColumn(1);
@@ -526,7 +531,7 @@ void KWH::NeueZeileGewuerze(int id, int menge_einh, int verarbeitung)
 	model_gew_zutat->setHeaderData(2, Qt::Horizontal, "e_kurzzzeichen");
 	model_gew_zutat->setHeaderData(3, Qt::Horizontal, "zlg_einheit");
 	model_gew_zutat->setHeaderData(4, Qt::Horizontal, "zlg_preis_p_einh");
-	QComboBox* comboBox_Gew_Zutat = new QComboBox();
+	MyQComboBox* comboBox_Gew_Zutat = new MyQComboBox();
 	comboBox_Gew_Zutat->clear();
 	comboBox_Gew_Zutat->setModel(model_gew_zutat);
 	comboBox_Gew_Zutat->setModelColumn(1);
@@ -583,7 +588,7 @@ void KWH::NeueZeileGewuerze(int id, int menge_einh, int verarbeitung)
 	model_verarb->setQuery(query);
 	model_verarb->setHeaderData(0, Qt::Horizontal, "ID");
 	model_verarb->setHeaderData(1, Qt::Horizontal, "v_art");
-	QComboBox* comboBox_Gew_Verarb = new QComboBox();
+	MyQComboBox* comboBox_Gew_Verarb = new MyQComboBox();
 	comboBox_Gew_Verarb->clear();
 	comboBox_Gew_Verarb->setModel(model_verarb);
 	comboBox_Gew_Verarb->setModelColumn(1);
@@ -2199,5 +2204,38 @@ void KWH::changeEintragDarm(int row, int col)
 			ok = true;
 		}
 	} while (!ok);
+
+}
+
+void KWH::erstelleAktionen()
+{
+	// Aktion exit in Menue Datei
+	//ActExit = new QAction("Exit", this);
+	//ActExit->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+	////connect(ActExit, SIGNAL(triggered()), this, SLOT(close()));
+	//connect(ActExit, &QAction::triggered, qApp, QApplication::quit);
+
+	//// Aktion einstellungen in Menü Extras
+	//ActEinstellungen = new QAction("", this);
+	//ActEinstellungen->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+	////connect(ActEinstellungen, SIGNAL(triggered()), this, SLOT(slot_einstellungen()));
+	//connect(ActEinstellungen, &QAction::triggered, this, &KWH::oeffneEinstellungen);
+
+}
+
+void KWH::erstelleMenue()
+{
+	//// Menü Datei
+
+	//MenueDatei = menuBar()->addMenu("Datei");
+	//MenueDatei->addAction(ActExit);
+	//MenueDatei->addSeparator();
+	
+}
+
+void KWH::oeffneEinstellungen()
+{
+
+	QMessageBox::information(this,"Test","slot öffne Einstellungen");
 
 }

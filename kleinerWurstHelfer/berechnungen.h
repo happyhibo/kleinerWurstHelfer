@@ -1,5 +1,5 @@
-#ifndef BERECHNUNGEN_HPP
-#define BERECHNUNGEN_HPP
+#ifndef BERECHNUNGEN_H
+#define BERECHNUNGEN_H
 
 class Qberechnungen {
 
@@ -16,4 +16,4 @@ private:
 
 };
 
-#endif // BERECHNUNGEN_HPP
+#endif // BERECHNUNGEN_H
