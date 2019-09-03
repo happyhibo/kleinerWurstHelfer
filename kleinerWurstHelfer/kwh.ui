@@ -39,7 +39,7 @@
        <string notr="true">background-color: rgb(232, 232, 232);</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="documentMode">
        <bool>false</bool>
@@ -170,6 +170,9 @@
               <property name="columnCount">
                <number>8</number>
               </property>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
               <column>
                <property name="text">
                 <string>ID</string>
@@ -271,6 +274,9 @@
               <property name="columnCount">
                <number>9</number>
               </property>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
               <column>
                <property name="text">
                 <string>ID</string>
@@ -727,7 +733,7 @@
              <widget class="QTextEdit" name="textEdit_Zubereitung">
               <property name="minimumSize">
                <size>
-                <width>200</width>
+                <width>400</width>
                 <height>0</height>
                </size>
               </property>
@@ -784,7 +790,7 @@
            </font>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="page_Fleisch">
            <property name="geometry">
@@ -908,8 +914,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1221</width>
-             <height>542</height>
+             <width>276</width>
+             <height>122</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1033,6 +1039,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>Ø [mm]</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>Einheit</string>
                  </property>
                  <property name="font">
@@ -1094,8 +1105,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1221</width>
-             <height>542</height>
+             <width>812</width>
+             <height>148</height>
             </rect>
            </property>
            <attribute name="label">

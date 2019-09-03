@@ -6,6 +6,7 @@ myNewDialog::myNewDialog(QString txtTitel, QString txtZeile1, QString txtZeile2,
 	QStringList txtListe = { txtZeile1, txtZeile2, txtZeile3, txtZeile4, txtZeile5 };
 
 	setupUi(this);
+	this->setWindowModality(Qt::ApplicationModal);
 	this->resize(50, 50);
 	QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	sizePolicy.setHorizontalStretch(0);
@@ -15,7 +16,7 @@ myNewDialog::myNewDialog(QString txtTitel, QString txtZeile1, QString txtZeile2,
 	
 	font.setPointSize(10);
 	this->setFont(font);
-
+	
 	mainLayout = new QVBoxLayout;
 	mainLayout->setSpacing(6);
 	mainLayout->setContentsMargins(10, 10, 10, 10);

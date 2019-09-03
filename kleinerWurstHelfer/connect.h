@@ -16,11 +16,11 @@
 #include "definitionen.h"
 #include "errormessage.h"
 
-
-QString sql;
-QSqlQuery query;
+static bool UpdateDB_v0_v1();
+static bool UpdateDB_v1_v2();
 
 static bool DB_verbindung() {
+
 
 	//Datenbank ist vorhanden
 	//bool dbVorhanden = false;
@@ -78,7 +78,9 @@ static bool DB_verbindung() {
 			CANCEL_PROGRAM, QString::fromLatin1("Betroffene Datei:\n") + dbPfad);
 		return false;
 	}
-
+	
+	QString sql;
+	QSqlQuery query(db);
 	
 	int updateNr = 0;
 
@@ -134,6 +136,7 @@ static bool DB_verbindung() {
 		break;
 
 	case 2:
+		io = true;
 		break;
 
 	default:
@@ -158,6 +161,7 @@ static bool DB_verbindung() {
 static bool UpdateDB_v0_v1()
 {
 	// Daten aus SQL-Datei lesen
+	QSqlQuery query;
 	QSqlDatabase::database().transaction();
 	QString SQLDaten = DATEN_VORLAGE;
 	QFile schemaFile(SQLDaten);
@@ -181,7 +185,7 @@ static bool UpdateDB_v0_v1()
 	schemaFile.close();
 
 	//Versionsstand auf 1 setzen
-	sql = "UPDATE 'version' SET 'db_version'=1";
+	QString sql = "UPDATE 'version' SET 'db_version'=1";
 	if (!query.exec(sql))
 	{
 		ErrorMessage *errorMessage = new ErrorMessage();
@@ -199,8 +203,9 @@ static bool UpdateDB_v0_v1()
 static bool UpdateDB_v1_v2() 
 {
 	QSqlDatabase::database().transaction();
+	QSqlQuery query;
 	//Prüfen ob Spalte schon vorhanden
-	sql = "PRAGMA table_info('darmliste')";
+	QString sql = "PRAGMA table_info('darmliste')";
 	bool alterTable = true;
 	if (query.exec(sql)) {
 		while (query.next()) {

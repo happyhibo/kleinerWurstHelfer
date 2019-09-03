@@ -71,13 +71,13 @@ void KWH::initUi() {
 	tableWidget_Rezeptauswahl->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 	tableWidget_Rezeptauswahl->setSelectionBehavior(QAbstractItemView::SelectRows);
 	tableWidget_Rezeptauswahl->setSelectionMode(QAbstractItemView::SingleSelection);
-	tableWidget_Rezeptauswahl->verticalHeader()->setVisible(false);
+	tableWidget_Rezeptauswahl->verticalHeader()->setVisible(true);
 
 	tableWidget_Fleisch->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	tableWidget_Fleisch->horizontalHeader()->resizeSection(0, 30); //ID
 	tableWidget_Fleisch->horizontalHeader()->resizeSection(1, 200); //Zutat
 	tableWidget_Fleisch->horizontalHeader()->resizeSection(2, 80); //Menge%
-	tableWidget_Fleisch->horizontalHeader()->resizeSection(3, 200); //Verarbeitung
+	tableWidget_Fleisch->horizontalHeader()->resizeSection(3, 250); //Verarbeitung
 	tableWidget_Fleisch->horizontalHeader()->resizeSection(4, 20); //+
 	tableWidget_Fleisch->horizontalHeader()->resizeSection(5, 20); //-
 	tableWidget_Fleisch->horizontalHeader()->resizeSection(6, 20); //Verarbeitungs-ID
@@ -92,7 +92,7 @@ void KWH::initUi() {
 	tableWidget_Gewuerze->horizontalHeader()->resizeSection(1, 200); //Zutat
 	tableWidget_Gewuerze->horizontalHeader()->resizeSection(2, 100); //Menge/kg
 	tableWidget_Gewuerze->horizontalHeader()->resizeSection(3, 50); //Menge_einh
-	tableWidget_Gewuerze->horizontalHeader()->resizeSection(4, 200); //Verarbeitung
+	tableWidget_Gewuerze->horizontalHeader()->resizeSection(4, 250); //Verarbeitung
 	tableWidget_Gewuerze->horizontalHeader()->resizeSection(5, 20); //+
 	tableWidget_Gewuerze->horizontalHeader()->resizeSection(6, 20); //-
 	tableWidget_Gewuerze->horizontalHeader()->resizeSection(7, 20); //Verarbeitungs-ID
@@ -179,6 +179,15 @@ void KWH::initUi() {
 	tableWidget_Zutaten_Wurstart->setColumnHidden(0, true); // ID
 	tableWidget_Zutaten_Verarbeitung->setColumnHidden(0, true); // ID
 	tableWidget_Zutaten_Einheiten->setColumnHidden(0, true); // ID
+	tableWidget_Rezeptauswahl->verticalHeader()->setVisible(false);
+	tableWidget_Fleisch->verticalHeader()->setVisible(false);
+	tableWidget_Gewuerze->verticalHeader()->setVisible(false);
+	tableWidget_Zutaten_Fleisch->verticalHeader()->setVisible(false);
+	tableWidget_Zutaten_Gewuerze->verticalHeader()->setVisible(false);
+	tableWidget_Zutaten_Darm->verticalHeader()->setVisible(false);
+	tableWidget_Zutaten_Wurstart->verticalHeader()->setVisible(false);
+	tableWidget_Zutaten_Verarbeitung->verticalHeader()->setVisible(false);
+	tableWidget_Zutaten_Einheiten->verticalHeader()->setVisible(false);
 #endif // !DEBUG
 
 	tabWidget_oben->setCurrentIndex(0); // Tab Rezeptübersicht
@@ -892,7 +901,7 @@ void KWH::ladeZutatenlisten()
 	tableWidget_Zutaten_Gewuerze->setSortingEnabled(true);
 
 	//sql = "SELECT * FROM darmliste WHERE ID > 1 ORDER BY d_art ASC;";
-	sql = "SELECT dl.ID, dl.d_art, e.e_kurzzeichen, dl.d_preis_p_einh FROM darmliste as dl ";
+	sql = "SELECT dl.ID, dl.d_art, dl.d_durchmesser, e.e_kurzzeichen, dl.d_preis_p_einh FROM darmliste as dl ";
 	sql += "LEFT JOIN einheiten as e on dl.d_einheit = e.ID ";
 	sql += "WHERE dl.ID > 1 ORDER BY dl.d_art ASC;";
 	//QSqlQuery query;
@@ -1639,12 +1648,13 @@ void KWH::on_pushButton_Rezept_PDF_clicked() {
 
 void KWH::on_pushButton_EintragNeu_Darm_clicked() {
 
-	myNewDialog mNDlg("Neuer Eintrag", "Name :","Einheit :", "Preis per Einh. :");
-	QString d_name, d_einh, d_ppe; 
+	myNewDialog mNDlg("Neuer Eintrag", "Name :","Ø [mm] :" , "Einheit :", "Preis per Einh. :");
+	QString d_name, d_einh, d_ppe, d_drm; 
 	QString db_tab = "darmliste";
 	QString db_cell1 = "d_art";
-	QString db_cell2 = "d_einheit";
-	QString db_cell3 = "d_preis_p_einh";
+	QString db_cell2 = "d_durchmesser";
+	QString db_cell3 = "d_einheit";
+	QString db_cell4 = "d_preis_p_einh";
 	QSqlQuery query;
 	bool ok = false;
 	bool schreibeDB = false;
@@ -1655,8 +1665,9 @@ void KWH::on_pushButton_EintragNeu_Darm_clicked() {
 		if (mNDlg.exec() == QDialog::Accepted)
 		{
 			d_name = mNDlg.lineEdit[0]->text();
+			d_drm = mNDlg.lineEdit[1]->text();
 			d_einh = mNDlg.label_einh_id->text();
-			d_ppe = mNDlg.lineEdit[2]->text();
+			d_ppe = mNDlg.lineEdit[3]->text();
 			d_ppe.replace(",", ".");
 			QString sql = "SELECT Count(" + db_cell1 + ") FROM " + db_tab + " WHERE "+ db_cell1 + " = '" + d_name + "';";
 			if (!query.exec(sql))
@@ -1690,8 +1701,8 @@ void KWH::on_pushButton_EintragNeu_Darm_clicked() {
 	if (schreibeDB)
 	{
 		
-		QString sql = "INSERT INTO '" + db_tab + "' (" + db_cell1 + ", " + db_cell2 + ", " + db_cell3 + ") ";
-		sql += "VALUES('" + d_name + "', '" + d_einh + "', '" + d_ppe + "'); ";
+		QString sql = "INSERT INTO '" + db_tab + "' (" + db_cell1 + ", " + db_cell2 + ", " + db_cell3 + ", " + db_cell4 + ") ";
+		sql += "VALUES('" + d_name + "', '" + d_drm + "', '" + d_einh + "', '" + d_ppe + "'); ";
 		//QSqlQuery query;
 		if (!query.exec(sql))
 		{
@@ -2142,14 +2153,16 @@ void KWH::changeEintragDarm(int row, int col)
 {
 	QString id = tableWidget_Zutaten_Darm->item(row, 0)->text();
 
-	myNewDialog mNDlg(QString::fromLatin1("Eintrag ändern"), "Darmart :", "Preis per Einh. :");
+	myNewDialog mNDlg(QString::fromLatin1("Eintrag ändern"), "Darmart :", "Drm [mm]:" ,"Preis per Einh. :");
 	mNDlg.lineEdit[0]->setText(tableWidget_Zutaten_Darm->item(row, 1)->text());
-	mNDlg.lineEdit[1]->setText(tableWidget_Zutaten_Darm->item(row, 3)->text());
+	mNDlg.lineEdit[1]->setText(tableWidget_Zutaten_Darm->item(row, 2)->text());
+	mNDlg.lineEdit[2]->setText(tableWidget_Zutaten_Darm->item(row, 4)->text());
 	mNDlg.lineEdit[0]->setDisabled(true);
 
-	QString upd1;
+	QString upd1, upd2;
 	QString db_tab = "darmliste";
-	QString db_col1 = "d_preis_p_einh";
+	QString db_col1 = "d_durchmesser";
+	QString db_col2 = "d_preis_p_einh";
 	QString sql;
 	QSqlQuery query;
 	bool ok = false;
@@ -2160,16 +2173,17 @@ void KWH::changeEintragDarm(int row, int col)
 		if (mNDlg.exec() == QDialog::Accepted)
 		{
 			upd1 = mNDlg.lineEdit[1]->text();
-			upd1.replace(",", ".");
+			upd2 = mNDlg.lineEdit[2]->text();
+			upd2.replace(",", ".");
 
 			/*UPDATE table_name
 				SET column1 = value1, column2 = value2, ...
 				WHERE condition;*/
 
 			sql = "UPDATE " + db_tab + " ";
-			sql += "SET " + db_col1 + " = '" + upd1 + "' ";
+			sql += "SET " + db_col1 + " = '" + upd1 + "', " + db_col2 + " = '" + upd2 + "' ";
 			sql += "WHERE ID = " + id + ";";
-			//QSqlQuery query;
+
 			if (!query.exec(sql))
 			{
 				ErrorMessage *errorMessage = new ErrorMessage();
