@@ -263,3 +263,4 @@ __pycache__/
 # My Changes
 GeneratedFiles/
 kwh_daten.s3db
+/kleinerWurstHelfer/kwh_daten.s3db.org

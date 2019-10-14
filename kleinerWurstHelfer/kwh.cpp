@@ -7,6 +7,7 @@ KWH::KWH(QWidget* parent) : QMainWindow(parent)
 	setupUi(this);
 	erstelleAktionen();
 	erstelleMenue();
+	leseSettings();
 	initUi();
 	ladeZutatenlisten();
 	fuelleRezeptauswahl();
@@ -29,15 +30,79 @@ KWH::KWH(QWidget* parent) : QMainWindow(parent)
 
 KWH::~KWH()
 {
+	schreibeSettings();
 }
+
+void KWH::leseSettings()
+{
+	//QSettings settings(QSettings::IniFormat, QSettings::UserScope, APP_KURZNAME, APP_NAME);
+
+	//settings.beginGroup("MainWindow");
+	//this->resize(settings.value("size", QSize(1280, 768)).toSize());
+	//this->move(settings.value("pos", QPoint(140, 40)).toPoint());
+	//settings.endGroup();
+
+	this->resize(settings.getWindowSize());
+	this->move(settings.getWindowPos());
+
+}
+
+void KWH::schreibeSettings()
+{
+	//QSettings settings(QSettings::IniFormat, QSettings::UserScope, APP_KURZNAME, APP_NAME);
+
+	//settings.beginGroup("MainWindow");
+	//settings.setValue("size", size());
+	//settings.setValue("pos", pos());
+	//settings->setValue("geometry", saveGeometry());
+	//settings->setValue("state", saveState());
+	//settings.endGroup();
+
+	settings.setWindowSize(size());
+	settings.setWindowPos(pos());
+}
+
 
 void KWH::on_tableWidget_Rezeptauswahl_itemSelectionChanged()
 {
 	tableWidget_Rezeptauswahl->setFocus();
 }
 
-void KWH::on_tableWidget_Rezeptauswahl_cellDoubleClicked(int, int)
+void KWH::on_tableWidget_Rezeptauswahl_cellDoubleClicked(int row, int col)
 {
+	
+	if (col == 4) //Col Bemerkung doppelklick
+	{
+		//tableWidget_Rezeptauswahl->editItem(tableWidget_Rezeptauswahl->item(row, col));
+		QString id = tableWidget_Rezeptauswahl->item(row, 0)->text();
+		QString db_tab = "rezeptliste";
+		QString db_col1 = "r_bemerkung";
+		QString upd1;
+		QString sql;
+		QSqlQuery query;
+
+		myNewDialog mNDlg(QString::fromLatin1("Bemerkung ändern"), "Bemerkung :");
+		mNDlg.lineEdit[0]->setText(tableWidget_Rezeptauswahl->item(row, col)->text());
+		mNDlg.lineEdit[0]->setMinimumSize(QSize(250, 22));
+
+		if (mNDlg.exec() == QDialog::Accepted)
+		{
+			upd1 = mNDlg.lineEdit[0]->text();
+			sql = "UPDATE " + db_tab + " ";
+			sql += "SET " + db_col1 + " = '" + upd1 + "' ";
+			sql += "WHERE ID = " + id + ";";
+
+			if (!query.exec(sql))
+			{
+				ErrorMessage *errorMessage = new ErrorMessage();
+				errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+					CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+					+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
+			}
+		}
+		fuelleRezeptauswahl();
+		return;
+	}
 	ladeRezeptDetails();
 }
 
@@ -63,7 +128,7 @@ void KWH::initUi() {
 #endif //DEBUG	
 
 	// Windowicon setzten
-	kwh_icon.addFile(":/kwh_icon.ico", QSize(64, 64));
+	kwh_icon.addFile(":/KWH/Resources/kwh.png", QSize(64, 64));
 	setWindowIcon(kwh_icon);
 
 	tableWidget_Rezeptauswahl->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
@@ -239,7 +304,7 @@ void KWH::fuelleRezeptauswahl()
 			FeldNr = query.record().indexOf("r_bemerkung");
 			QTableWidgetItem* newItem4 = new QTableWidgetItem(query.value(FeldNr).toString());
 			tableWidget_Rezeptauswahl->setItem(i, 4, newItem4);
-			// Rezeptdarm
+			// Rezeptdatum
 			FeldNr = query.record().indexOf("r_erstellt");
 			QTableWidgetItem* newItem5 = new QTableWidgetItem(query.value(FeldNr).toString());
 			newItem5->setData(Qt::DisplayRole, QDateTime::fromString(query.value(FeldNr).toString(), Qt::ISODate));
@@ -304,21 +369,29 @@ void KWH::slot_pushButton_Rezept_kopieren_clicked() {
 	QSqlDatabase::database().transaction();
 	// Rezept
 	QString sql = "INSERT INTO rezeptliste (";
-	sql += "r_name, r_art, r_darm, r_bemerkung, r_erstellt";
+	sql += "r_name, r_art, r_darm, r_zubereitung, r_erstellt";
 	sql += ") SELECT ";
 	sql += "'" + name + "', ";
-	sql += "r_art, r_darm, r_bemerkung, ";
+	sql += "r_art, r_darm, r_zubereitung, ";
 	sql += "'" + QDateTime::currentDateTime().toString(Qt::ISODate) + "'"; // r_erstellt
 	sql += " FROM rezeptliste WHERE ID=" + id;
 	QSqlQuery query;
 	if (!query.exec(sql)) 
 	{
+		ErrorMessage *errorMessage = new ErrorMessage();
+		errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+			CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+			+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
 	}
 	// neue ID abrufen
 	sql = "SELECT last_insert_rowid()";
 	//QSqlQuery query;
 	if (!query.exec(sql)) 
 	{
+		ErrorMessage *errorMessage = new ErrorMessage();
+		errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+			CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+			+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
 		io = false;
 	}
 	else
@@ -337,6 +410,10 @@ void KWH::slot_pushButton_Rezept_kopieren_clicked() {
 	//QSqlQuery query;
 	if (!query.exec(sql))
 	{
+		ErrorMessage *errorMessage = new ErrorMessage();
+		errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+			CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+			+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
 		io = false;
 	}
 
@@ -350,6 +427,47 @@ void KWH::slot_pushButton_Rezept_kopieren_clicked() {
 	//QSqlQuery query;
 	if (!query.exec(sql))
 	{
+		ErrorMessage *errorMessage = new ErrorMessage();
+		errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+			CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+			+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
+		io = false;
+	}
+
+	// Rezept pos Zubereitung
+	sql = "INSERT INTO rezept_pos_zubereitung (";
+	sql += "rpz_rezept_id, rpz_zubereitung";
+	sql += ") SELECT ";
+	sql += "'" + ID_Neu + "', ";
+	sql += "rpz_zubereitung";
+	sql += " FROM rezept_pos_zubereitung WHERE rpz_rezept_id=" + id;
+	//QSqlQuery query;
+	if (!query.exec(sql))
+	{
+		ErrorMessage *errorMessage = new ErrorMessage();
+		errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+			CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+			+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
+		io = false;
+	}
+
+	sql = "SELECT last_insert_rowid()";
+	//QSqlQuery query;
+	if (!query.exec(sql))
+	{
+	}
+	query.first();
+	QString lastID = query.value(0).toString();
+
+	sql = "UPDATE rezeptliste SET ";
+	sql += "r_zubereitung = '" + lastID + "' WHERE ID = " + ID_Neu + ";";
+	//QSqlQuery query;
+	if (!query.exec(sql))
+	{
+		ErrorMessage *errorMessage = new ErrorMessage();
+		errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+			CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+			+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
 		io = false;
 	}
 
@@ -510,7 +628,7 @@ void KWH::NeueZeileFleisch(int id, int menge_prozent, int verarbeitung) {
 
 }
 
-void KWH::NeueZeileGewuerze(int id, int menge_einh, int verarbeitung)
+void KWH::NeueZeileGewuerze(int id, double menge_einh, int verarbeitung)
 {
 	int n = tableWidget_Gewuerze->rowCount();
 	tableWidget_Gewuerze->setRowCount(n + 1);
@@ -537,7 +655,7 @@ void KWH::NeueZeileGewuerze(int id, int menge_einh, int verarbeitung)
 	comboBox_Gew_Zutat->setModelColumn(1);
 	// Dann mit den Zutaten füllen
 	int mRows = comboBox_Gew_Zutat->model()->rowCount();
-	// auswahl anwÃ¤hlen		
+	// auswahl anwählen		
 	for (int i = 0; i < mRows; i++) {
 		QModelIndex mIndex = comboBox_Gew_Zutat->model()->index(i, 0);
 		QModelIndex mIndex2 = comboBox_Gew_Zutat->model()->index(i, 2);
@@ -787,7 +905,7 @@ void KWH::ladeRezeptDetails()
 
 			// Menge/kg
 			FeldNr = query.record().indexOf("rpg_menge_einheit");
-			int GewMenge = query.value(FeldNr).toInt();
+			double GewMenge = query.value(FeldNr).toDouble();
 
 			// Verarbeitung
 			FeldNr = query.record().indexOf("rpg_verarbeitung");
@@ -1051,7 +1169,7 @@ void KWH::schreibeRezeptPosZubereitung(QString aktID)
 {
 	QString lastID;
 	//schreibe RezeptPosZubereitung
-	QString sql = "DELETE FROM rezept_pos_zubereitung WHERE rpz_rezept_id =" + aktID;
+	QString sql = "DELETE FROM rezept_pos_zubereitung WHERE rpz_rezept_id =" + aktID + ";";
 	QSqlQuery query;
 	if (!query.exec(sql))
 	{
@@ -1074,7 +1192,7 @@ void KWH::schreibeRezeptPosZubereitung(QString aktID)
 	lastID = query.value(0).toString();
 
 	sql = "UPDATE rezeptliste SET ";
-	sql += "r_zubereitung = '" + lastID + "';";
+	sql += "r_zubereitung = '" + lastID + "' WHERE rpz_rezept_id = " + aktID + ";";
 	//QSqlQuery query;
 	if (!query.exec(sql))
 	{
@@ -1239,65 +1357,55 @@ void KWH::on_pushButton_EintragNeu_Einheiten_clicked()
 	QString kurzz;
 	QString sql;
 	QSqlQuery query;
-	bool ok = false;
-	bool schreibeDB = false;
-	do
+
+	if (mNDlg.exec() == QDialog::Accepted)
 	{
-		mNDlg.show();
-
-		if (mNDlg.exec() == QDialog::Accepted)
+		einheit = mNDlg.lineEdit[0]->text();
+		kurzz = mNDlg.lineEdit[1]->text();
+		sql = "SELECT Count(" + db_cell1 + ") FROM " + db_tab + " WHERE " + db_cell1 + " = '" + einheit + "';";
+		if (!query.exec(sql))
 		{
-			einheit = mNDlg.lineEdit[0]->text();
-			kurzz = mNDlg.lineEdit[1]->text();
-			sql = "SELECT Count(" + db_cell1 + ") FROM " + db_tab + " WHERE " + db_cell1 + " = '" + einheit + "';";
-			if (!query.exec(sql))
-			{
-			}
-			query.first();
-			int eCount = query.value(0).toInt();
-			if (eCount != 0)
-			{
-				QMessageBox msgBox;
-				msgBox.setWindowTitle(QString::fromLatin1("Einheit vorhanden"));
-				msgBox.setText(QString::fromLatin1("Die Einheit<b> ") + einheit + QString::fromLatin1(" </b>existiert bereits!"));
-				msgBox.setIcon(QMessageBox::Information);
-				msgBox.setStandardButtons(QMessageBox::Ok);
-				msgBox.exec();
-				return;
-			}
-
-			sql = "SELECT Count(" + db_cell2 + ") FROM " + db_tab + " WHERE " + db_cell2 + " = '" + kurzz + "';";
-			//QSqlQuery query;
-			if (!query.exec(sql))
-			{
-			}
-			query.first();
-			eCount = query.value(0).toInt();
-			if (eCount != 0)
-			{
-				QMessageBox msgBox;
-				msgBox.setWindowTitle(QString::fromLatin1("Kurzzeichen vorhanden"));
-				msgBox.setText(QString::fromLatin1("Das Kurzzeichen<b> ") + kurzz + QString::fromLatin1(" </b>existiert bereits!"));
-				msgBox.setIcon(QMessageBox::Information);
-				msgBox.setStandardButtons(QMessageBox::Ok);
-				msgBox.exec();
-				return;
-			}
-			
-			sql = "INSERT INTO '" + db_tab + "' (" + db_cell1 + ", " + db_cell2 + ") ";
-			sql += "VALUES('" + einheit + "', '" + kurzz + "'); ";
-			//QSqlQuery query;
-			if (!query.exec(sql))
-			{
-			}
-			ladeZutatenlisten();
+		}
+		query.first();
+		int eCount = query.value(0).toInt();
+		if (eCount != 0)
+		{
+			QMessageBox msgBox;
+			msgBox.setWindowTitle(QString::fromLatin1("Einheit vorhanden"));
+			msgBox.setText(QString::fromLatin1("Die Einheit<b> ") + einheit + QString::fromLatin1(" </b>existiert bereits!"));
+			msgBox.setIcon(QMessageBox::Information);
+			msgBox.setStandardButtons(QMessageBox::Ok);
+			msgBox.exec();
 			return;
 		}
-		else
+
+		sql = "SELECT Count(" + db_cell2 + ") FROM " + db_tab + " WHERE " + db_cell2 + " = '" + kurzz + "';";
+		//QSqlQuery query;
+		if (!query.exec(sql))
 		{
-			ok = true;
 		}
-	} while (!ok);
+		query.first();
+		eCount = query.value(0).toInt();
+		if (eCount != 0)
+		{
+			QMessageBox msgBox;
+			msgBox.setWindowTitle(QString::fromLatin1("Kurzzeichen vorhanden"));
+			msgBox.setText(QString::fromLatin1("Das Kurzzeichen<b> ") + kurzz + QString::fromLatin1(" </b>existiert bereits!"));
+			msgBox.setIcon(QMessageBox::Information);
+			msgBox.setStandardButtons(QMessageBox::Ok);
+			msgBox.exec();
+			return;
+		}
+			
+		sql = "INSERT INTO '" + db_tab + "' (" + db_cell1 + ", " + db_cell2 + ") ";
+		sql += "VALUES('" + einheit + "', '" + kurzz + "'); ";
+		//QSqlQuery query;
+		if (!query.exec(sql))
+		{
+		}
+		ladeZutatenlisten();
+		return;
+	}
 
 }
 
@@ -1395,47 +1503,37 @@ void KWH::on_pushButton_EintragNeu_Verarbeitung_clicked()
 	QString eintrag;
 	QString db_tab = "verarbeitung";
 	QSqlQuery query;
-	bool ok = false;
-	do
-	{
-		mNDlg.show();
 
-		if (mNDlg.exec() == QDialog::Accepted)
+	if (mNDlg.exec() == QDialog::Accepted)
+	{
+		eintrag = mNDlg.lineEdit[0]->text();
+		QString sql = "SELECT Count(v_art) FROM " + db_tab + " WHERE v_art = '" + eintrag + "';";
+		if (!query.exec(sql))
 		{
-			eintrag = mNDlg.lineEdit[0]->text();
-			QString sql = "SELECT Count(v_art) FROM " + db_tab + " WHERE v_art = '" + eintrag + "';";
-			if (!query.exec(sql))
-			{
-			}
-			query.first();
-			int eCount = query.value(0).toInt();
-			if (eCount != 0)
-			{
-				QMessageBox msgBox;
-				msgBox.setWindowTitle(QString::fromLatin1("Eintrag vorhanden!"));
-				msgBox.setText(QString::fromLatin1("Der Eintrag <b>") + eintrag + QString::fromLatin1("</b> existiert bereits!"));
-				msgBox.setIcon(QMessageBox::Information);
-				msgBox.setStandardButtons(QMessageBox::Ok);
-				msgBox.exec();
-				return;
-			}
-			else
-			{
-				QString sql = "INSERT INTO '" + db_tab + "' ('v_art') VALUES ('" + eintrag + "');";
-				//QSqlQuery query;
-				if (!query.exec(sql))
-				{
-				}
-				ladeZutatenlisten();
-				return;
-			}
+		}
+		query.first();
+		int eCount = query.value(0).toInt();
+		if (eCount != 0)
+		{
+			QMessageBox msgBox;
+			msgBox.setWindowTitle(QString::fromLatin1("Eintrag vorhanden!"));
+			msgBox.setText(QString::fromLatin1("Der Eintrag <b>") + eintrag + QString::fromLatin1("</b> existiert bereits!"));
+			msgBox.setIcon(QMessageBox::Information);
+			msgBox.setStandardButtons(QMessageBox::Ok);
+			msgBox.exec();
+			return;
 		}
 		else
 		{
-			ok = true;
+			QString sql = "INSERT INTO '" + db_tab + "' ('v_art') VALUES ('" + eintrag + "');";
+			//QSqlQuery query;
+			if (!query.exec(sql))
+			{
+			}
+			ladeZutatenlisten();
+			return;
 		}
-	} while (!ok);
-
+	}
 }
 
 void KWH::on_pushButton_EintragDel_Verarbeitung_clicked()
@@ -1512,11 +1610,7 @@ void KWH::on_pushButton_EintragNeu_Wurstart_clicked()
 	QString eintrag;
 	QString db_tab = "wurstarten";
 	QSqlQuery query;
-	bool ok = false;
 	bool schreibeDB = false;
-	do
-	{
-		mNDlg.show();
 
 		if (mNDlg.exec() == QDialog::Accepted)
 		{
@@ -1535,20 +1629,17 @@ void KWH::on_pushButton_EintragNeu_Wurstart_clicked()
 				msgBox.setIcon(QMessageBox::Information);
 				msgBox.setStandardButtons(QMessageBox::Ok);
 				msgBox.exec();
-				ok = false;
-				schreibeDB = false;
+				return;
 			}
 			else
 			{
-				ok = true;
 				schreibeDB = true;
 			}
 		}
 		else
 		{
-			ok = true;
+			return;
 		}
-	} while (!ok);
 
 	if (schreibeDB)
 	{
@@ -1556,6 +1647,10 @@ void KWH::on_pushButton_EintragNeu_Wurstart_clicked()
 		//QSqlQuery query;
 		if (!query.exec(sql))
 		{
+			ErrorMessage *errorMessage = new ErrorMessage();
+			errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+				CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+				+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
 		}
 		ladeZutatenlisten();
 	}
@@ -1663,10 +1758,6 @@ void KWH::on_pushButton_EintragNeu_Darm_clicked() {
 	QSqlQuery query;
 	bool ok = false;
 	bool schreibeDB = false;
-	do
-	{
-		mNDlg.show();
-
 		if (mNDlg.exec() == QDialog::Accepted)
 		{
 			d_name = mNDlg.lineEdit[0]->text();
@@ -1688,20 +1779,17 @@ void KWH::on_pushButton_EintragNeu_Darm_clicked() {
 				msgBox.setIcon(QMessageBox::Information);
 				msgBox.setStandardButtons(QMessageBox::Ok);
 				msgBox.exec();
-				ok = false;
 				schreibeDB = false;
 			}
 			else
 			{
-				ok = true;
 				schreibeDB = true;
 			}
 		}
 		else
 		{
-			ok = true;
+			schreibeDB = false;
 		}
-	} while (!ok);
 
 	if (schreibeDB)
 	{
@@ -1788,51 +1876,40 @@ void KWH::on_pushButton_EintragNeu_Gewuerze_clicked() {
 	QString db_cell3 = "zlg_preis_p_einh";
 	QString sql;
 	QSqlQuery query;
-	bool ok = false;
-	do
+	if (mNDlg.exec() == QDialog::Accepted)
 	{
-		mNDlg.show();
-
-		if (mNDlg.exec() == QDialog::Accepted)
+		g_name = mNDlg.lineEdit[0]->text();
+		g_einh = mNDlg.label_einh_id->text();
+		g_ppe = mNDlg.lineEdit[2]->text();
+		g_ppe.replace(",", ".");
+		sql = "SELECT Count(" + db_cell1 + ") FROM " + db_tab + " WHERE " + db_cell1 + " = '" + g_name + "';";
+		if (!query.exec(sql))
 		{
-			g_name = mNDlg.lineEdit[0]->text();
-			g_einh = mNDlg.label_einh_id->text();
-			g_ppe = mNDlg.lineEdit[2]->text();
-			g_ppe.replace(",", ".");
-			sql = "SELECT Count(" + db_cell1 + ") FROM " + db_tab + " WHERE " + db_cell1 + " = '" + g_name + "';";
-			if (!query.exec(sql))
-			{
-			}
-			query.first();
-			int eCount = query.value(0).toInt();
-			if (eCount != 0)
-			{
-				QMessageBox msgBox;
-				msgBox.setWindowTitle(QString::fromLatin1("Eintrag vorhanden!"));
-				msgBox.setText(QString::fromLatin1("Der Eintrag <b>") + g_name + QString::fromLatin1("</b> existiert bereits!"));
-				msgBox.setIcon(QMessageBox::Information);
-				msgBox.setStandardButtons(QMessageBox::Ok);
-				msgBox.exec();
-				return;
-			}
-			else
-			{
-				sql = "INSERT INTO '" + db_tab + "' (" + db_cell1 + ", " + db_cell2 + ", " + db_cell3 + ") ";
-				sql += "VALUES('" + g_name + "', '" + g_einh + "', '" + g_ppe + "'); ";
-				//QSqlQuery query;
-				if (!query.exec(sql))
-				{
-				}
-				ladeZutatenlisten();
-				return;
-			}
+		}
+		query.first();
+		int eCount = query.value(0).toInt();
+		if (eCount != 0)
+		{
+			QMessageBox msgBox;
+			msgBox.setWindowTitle(QString::fromLatin1("Eintrag vorhanden!"));
+			msgBox.setText(QString::fromLatin1("Der Eintrag <b>") + g_name + QString::fromLatin1("</b> existiert bereits!"));
+			msgBox.setIcon(QMessageBox::Information);
+			msgBox.setStandardButtons(QMessageBox::Ok);
+			msgBox.exec();
+			return;
 		}
 		else
 		{
-			ok = true;
+			sql = "INSERT INTO '" + db_tab + "' (" + db_cell1 + ", " + db_cell2 + ", " + db_cell3 + ") ";
+			sql += "VALUES('" + g_name + "', '" + g_einh + "', '" + g_ppe + "'); ";
+			//QSqlQuery query;
+			if (!query.exec(sql))
+			{
+			}
+			ladeZutatenlisten();
+			return;
 		}
-	} while (!ok);
-
+	}
 }
 
 void KWH::on_pushButton_EintragDel_Gewuerze_clicked() {
@@ -1908,56 +1985,47 @@ void KWH::on_pushButton_EintragNeu_Fleisch_clicked() {
 	QString db_cell5 = "zlf_preis_p_einh";
 	QString sql;
 	QSqlQuery query;
-	bool ok = false;
-	do
-	{
-		mNDlg.show();
 
-		if (mNDlg.exec() == QDialog::Accepted)
+	if (mNDlg.exec() == QDialog::Accepted)
+	{
+		f_name = mNDlg.lineEdit[0]->text();
+		f_fettant = mNDlg.lineEdit[1]->text();
+		f_verschn = mNDlg.lineEdit[2]->text();
+		f_einh = mNDlg.label_einh_id->text();
+		f_ppe = mNDlg.lineEdit[4]->text();
+		f_ppe.replace(",", ".");
+		sql = "SELECT Count(" + db_cell1 + ") FROM " + db_tab + " WHERE " + db_cell1 + " = '" + f_name + "';";
+		if (!query.exec(sql))
 		{
-			f_name = mNDlg.lineEdit[0]->text();
-			f_fettant = mNDlg.lineEdit[1]->text();
-			f_verschn = mNDlg.lineEdit[2]->text();
-			f_einh = mNDlg.label_einh_id->text();
-			f_ppe = mNDlg.lineEdit[4]->text();
-			f_ppe.replace(",", ".");
-			sql = "SELECT Count(" + db_cell1 + ") FROM " + db_tab + " WHERE " + db_cell1 + " = '" + f_name + "';";
-			if (!query.exec(sql))
-			{
-			}
-			query.first();
-			int eCount = query.value(0).toInt();
-			if (eCount != 0)
-			{
-				QMessageBox msgBox;
-				msgBox.setWindowTitle(QString::fromLatin1("Eintrag vorhanden!"));
-				msgBox.setText(QString::fromLatin1("Der Eintrag <b>") + f_name + QString::fromLatin1("</b> existiert bereits!"));
-				msgBox.setIcon(QMessageBox::Information);
-				msgBox.setStandardButtons(QMessageBox::Ok);
-				msgBox.exec();
-				return;
-			}
-			else
-			{
-				sql = "INSERT INTO '" + db_tab + "' (" + db_cell1 + ", " + db_cell2 + ", " + db_cell3 + ", " + db_cell4 + ", " + db_cell5 + ") ";
-				sql += "VALUES('" + f_name + "', '" + f_fettant + "', '" + f_verschn + "', '" + f_einh + "', '" + f_ppe + "'); ";
-				//QSqlQuery query;
-				if (!query.exec(sql))
-				{
-					ErrorMessage *errorMessage = new ErrorMessage();
-					errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
-						CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
-						+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
-				}
-				ladeZutatenlisten();
-				return;
-			}
+		}
+		query.first();
+		int eCount = query.value(0).toInt();
+		if (eCount != 0)
+		{
+			QMessageBox msgBox;
+			msgBox.setWindowTitle(QString::fromLatin1("Eintrag vorhanden!"));
+			msgBox.setText(QString::fromLatin1("Der Eintrag <b>") + f_name + QString::fromLatin1("</b> existiert bereits!"));
+			msgBox.setIcon(QMessageBox::Information);
+			msgBox.setStandardButtons(QMessageBox::Ok);
+			msgBox.exec();
+			return;
 		}
 		else
 		{
-			ok = true;
+			sql = "INSERT INTO '" + db_tab + "' (" + db_cell1 + ", " + db_cell2 + ", " + db_cell3 + ", " + db_cell4 + ", " + db_cell5 + ") ";
+			sql += "VALUES('" + f_name + "', '" + f_fettant + "', '" + f_verschn + "', '" + f_einh + "', '" + f_ppe + "'); ";
+			//QSqlQuery query;
+			if (!query.exec(sql))
+			{
+				ErrorMessage *errorMessage = new ErrorMessage();
+				errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+					CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+					+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
+			}
+			ladeZutatenlisten();
+			return;
 		}
-	} while (!ok);
+	}
 
 }
 
@@ -2066,42 +2134,32 @@ void KWH::changeEintragFleisch(int row, int col)
 	//QString db_col5 = "";
 	QString sql;
 	QSqlQuery query;
-	bool ok = false;
-	do
+
+	if (mNDlg.exec() == QDialog::Accepted)
 	{
-		mNDlg.show();
+		upd1 = mNDlg.lineEdit[1]->text();
+		upd2 = mNDlg.lineEdit[2]->text();
+		upd3 = mNDlg.lineEdit[3]->text();
+		upd3.replace(",", ".");
 
-		if (mNDlg.exec() == QDialog::Accepted)
+		/*UPDATE table_name
+			SET column1 = value1, column2 = value2, ...
+			WHERE condition;*/
+
+		sql = "UPDATE " + db_tab + " ";
+		sql += "SET " + db_col1 + " = '" + upd1 + "', " + db_col2 + " = '" + upd2 + "', " + db_col3 + " = '" + upd3 + "' "; 
+		sql += "WHERE ID = " + id + ";";
+		//QSqlQuery query;
+		if (!query.exec(sql))
 		{
-			upd1 = mNDlg.lineEdit[1]->text();
-			upd2 = mNDlg.lineEdit[2]->text();
-			upd3 = mNDlg.lineEdit[3]->text();
-			upd3.replace(",", ".");
-
-			/*UPDATE table_name
-				SET column1 = value1, column2 = value2, ...
-				WHERE condition;*/
-
-			sql = "UPDATE " + db_tab + " ";
-			sql += "SET " + db_col1 + " = '" + upd1 + "', " + db_col2 + " = '" + upd2 + "', " + db_col3 + " = '" + upd3 + "' "; 
-			sql += "WHERE ID = " + id + ";";
-			//QSqlQuery query;
-			if (!query.exec(sql))
-			{
-				ErrorMessage *errorMessage = new ErrorMessage();
-				errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
-					CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
-					+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
-			}
-			ladeZutatenlisten();
-			return;
+			ErrorMessage *errorMessage = new ErrorMessage();
+			errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+				CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+				+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
 		}
-		else
-		{
-			ok = true;
-		}
-	} while (!ok);
-
+		ladeZutatenlisten();
+		return;
+	}
 }
 
 void KWH::changeEintragGewuerz(int row, int col) 
@@ -2118,40 +2176,30 @@ void KWH::changeEintragGewuerz(int row, int col)
 	QString db_col1 = "zlg_preis_p_einh";
 	QString sql;
 	QSqlQuery query;
-	bool ok = false;
-	do
+
+	if (mNDlg.exec() == QDialog::Accepted)
 	{
-		mNDlg.show();
+		upd1 = mNDlg.lineEdit[1]->text();
+		upd1.replace(",", ".");
 
-		if (mNDlg.exec() == QDialog::Accepted)
+		/*UPDATE table_name
+			SET column1 = value1, column2 = value2, ...
+			WHERE condition;*/
+
+		sql = "UPDATE " + db_tab + " ";
+		sql += "SET " + db_col1 + " = '" + upd1 + "' ";
+		sql += "WHERE ID = " + id + ";";
+		//QSqlQuery query;
+		if (!query.exec(sql))
 		{
-			upd1 = mNDlg.lineEdit[1]->text();
-			upd1.replace(",", ".");
-
-			/*UPDATE table_name
-				SET column1 = value1, column2 = value2, ...
-				WHERE condition;*/
-
-			sql = "UPDATE " + db_tab + " ";
-			sql += "SET " + db_col1 + " = '" + upd1 + "' ";
-			sql += "WHERE ID = " + id + ";";
-			//QSqlQuery query;
-			if (!query.exec(sql))
-			{
-				ErrorMessage *errorMessage = new ErrorMessage();
-				errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
-					CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
-					+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
-			}
-			ladeZutatenlisten();
-			return;
+			ErrorMessage *errorMessage = new ErrorMessage();
+			errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+				CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+				+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
 		}
-		else
-		{
-			ok = true;
-		}
-	} while (!ok);
-
+		ladeZutatenlisten();
+		return;
+	}
 }
 
 void KWH::changeEintragDarm(int row, int col)
@@ -2170,40 +2218,31 @@ void KWH::changeEintragDarm(int row, int col)
 	QString db_col2 = "d_preis_p_einh";
 	QString sql;
 	QSqlQuery query;
-	bool ok = false;
-	do
+
+	if (mNDlg.exec() == QDialog::Accepted)
 	{
-		mNDlg.show();
+		upd1 = mNDlg.lineEdit[1]->text();
+		upd2 = mNDlg.lineEdit[2]->text();
+		upd2.replace(",", ".");
 
-		if (mNDlg.exec() == QDialog::Accepted)
+		/*UPDATE table_name
+			SET column1 = value1, column2 = value2, ...
+			WHERE condition;*/
+
+		sql = "UPDATE " + db_tab + " ";
+		sql += "SET " + db_col1 + " = '" + upd1 + "', " + db_col2 + " = '" + upd2 + "' ";
+		sql += "WHERE ID = " + id + ";";
+
+		if (!query.exec(sql))
 		{
-			upd1 = mNDlg.lineEdit[1]->text();
-			upd2 = mNDlg.lineEdit[2]->text();
-			upd2.replace(",", ".");
-
-			/*UPDATE table_name
-				SET column1 = value1, column2 = value2, ...
-				WHERE condition;*/
-
-			sql = "UPDATE " + db_tab + " ";
-			sql += "SET " + db_col1 + " = '" + upd1 + "', " + db_col2 + " = '" + upd2 + "' ";
-			sql += "WHERE ID = " + id + ";";
-
-			if (!query.exec(sql))
-			{
-				ErrorMessage *errorMessage = new ErrorMessage();
-				errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
-					CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
-					+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
-			}
-			ladeZutatenlisten();
-			return;
+			ErrorMessage *errorMessage = new ErrorMessage();
+			errorMessage->showMessage(ERR_SQL_DB_ABFRAGE, TYPE_WARNUNG,
+				CANCEL_NO, QString::fromLatin1("Rückgabe:\n") + query.lastError().databaseText()
+				+ QString::fromLatin1("\nSQL-Befehl:\n") + sql);
 		}
-		else
-		{
-			ok = true;
-		}
-	} while (!ok);
+		ladeZutatenlisten();
+		return;
+	}
 
 }
 
@@ -2236,6 +2275,12 @@ void KWH::erstelleMenue()
 void KWH::oeffneEinstellungen()
 {
 
-	QMessageBox::information(this,"Test","slot öffne Einstellungen");
+	dlgEinstellungen dlgE;
+
+	if (dlgE.exec() == QDialog::Accepted)
+	{
+		//QMessageBox::information(this, "test", "Test Accepted");
+	}
+		
 
 }

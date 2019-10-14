@@ -55,7 +55,7 @@ Därme vor dem aufziehen warm (37°C) wässern!
 Brät in angegebenen Darm füllen und portionsweiße abdrehen.');
 
 -- Table: rezeptliste
-CREATE TABLE rezeptliste (ID INTEGER NOT NULL PRIMARY KEY, r_name TEXT, r_art INTEGER, r_darm INTEGER, r_zubereitung [INTEGER ', R_BEMERKUNG' TEXT], r_erstellt DATETIME);
+CREATE TABLE rezeptliste (ID INTEGER NOT NULL PRIMARY KEY, r_name TEXT, r_art INTEGER, r_darm INTEGER, r_zubereitung INTEGER, r_bemerkung TEXT, r_erstellt DATETIME);
 
 INSERT INTO rezeptliste (ID, r_name, r_art, r_darm, r_zubereitung, r_erstellt) VALUES (1, 'Bratwurst', 3, 4, 1, '2019-08-26T22:02:23');
 

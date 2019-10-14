@@ -1,0 +1,10 @@
+
+erl - Kommawerte (0,6) werden richtig gespeichert aber nich richtig éingelesen
+erl - Hülle wird nicht im Rezept gespeichert oder beim Aufruf nicht eingelesen
+erl - kilowerte Gewürze im Rezeptausdruck einfügen
+- pdf Ausdruck skalieren
+erl - Rezeptkopie funzt nicht
+erl - Rezeptbemerkung nicht nutzbar
+- Rezepte ex/import
+erl - Rezeptkopie ZubereitungTXT wird nicht mit kopiert. (rezept_pos_zubereitung)
+- DB koie funktioniert nicht

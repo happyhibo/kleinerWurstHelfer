@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1263</width>
+    <width>1280</width>
     <height>768</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <string>kleiner Wursthelfer</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="kwh.qrc">
+   <iconset>
     <normaloff>:/KWH/kwh_icon.ico</normaloff>
     <normalon>:/KWH/kwh_icon.ico</normalon>:/KWH/kwh_icon.ico</iconset>
   </property>
@@ -1006,8 +1006,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1221</width>
-             <height>554</height>
+             <width>276</width>
+             <height>122</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1346,7 +1346,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1263</width>
+     <width>1280</width>
      <height>21</height>
     </rect>
    </property>

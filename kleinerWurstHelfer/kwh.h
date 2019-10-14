@@ -2,9 +2,8 @@
 #ifndef KWH_H
 #define KWH_H
 
-
-#include <QtWidgets>
-#include <QtWidgets/QMainWindow>
+#include <qwidget.h>
+#include <qmainwindow.h>
 #include "ui_kwh.h"
 #include "definitionen.h"
 #include "errormessage.h"
@@ -26,6 +25,7 @@
 #include <qsqlquerymodel.h>
 #include "myqcombobox.h"
 #include <qtabwidget.h>
+#include <qtablewidget.h>
 #include <qfiledialog.h>
 #include <qdiriterator.h>
 #include <qurl.h>
@@ -34,7 +34,8 @@
 #include <qmenu.h>
 #include <qmenubar.h>
 #include <qaction.h>
-
+#include "dlgeinstellungen.h"
+#include "settings.h"
 
 class KWH : public QMainWindow, public Ui::KWHClass
 {
@@ -43,14 +44,18 @@ class KWH : public QMainWindow, public Ui::KWHClass
 public:
 	KWH(QWidget* parent = 0);
 	~KWH();
+	Settings settings;
+	
 
 
 private:
 	Ui::KWHClass ui;
+	void leseSettings();
+	void schreibeSettings();
 	void initUi();
 	void fuelleRezeptauswahl();
 	void NeueZeileFleisch(int id, int menge_prozent, int verarbeitung);
-	void NeueZeileGewuerze(int id, int menge_einh, int verarbeitung);
+	void NeueZeileGewuerze(int id, double menge_einh, int verarbeitung);
 	void ladeRezeptDetails();
 	void clearRezeptDetails();
 	void ladeRezeptberechnet();

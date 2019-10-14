@@ -94,8 +94,17 @@ void KWH::erstelleRezeptVorschau2()
 	body += "</tbody>";
 	body += "</table>";
 
-	body += "<h1 style = 'text-align: left; margin-left: 80px;'>Fleischanteile :</h1>";
+	body += "<h1 style = 'text-align: left; margin-left: 80px;'>Zutaten :</h1>";
 	body += "<table style = 'text-align: left; width: 80%; margin-left: auto; margin-right: auto;' border = '0' cellpadding = '0' cellspacing = '0'>";
+	body += "<thead>";
+	body += "<tr>";
+	body += "<th style = 'vertical-align: top; text-align: right; width: 100px;'><big>g/Masse</big><br></th>";
+	body += "<th style = 'vertical-align: top; width: 250px;'>";
+	body += "<div style = 'margin-left: 40px;'><big>Zutat</big><br></div></th>";
+	body += "<th style = 'vertical-align: top;'><big>Verarbeitung</big><br></div></th>";
+	body += "</tr>";
+	body += "</thead>";
+
 	body += "<tbody>";
 
 	//Fleischwidget auslesen
@@ -166,9 +175,21 @@ void KWH::erstelleRezeptVorschau2()
 	body += "<br><br>";
 
 	//++++++++++++++++++++++++++++++++++++++Gewürzbereich
-	body += "<h1 style = 'text-align: left; margin-left: 80px;'>Gew&uumlrzanteile :</h1>";
+	body += "<h1 style = 'text-align: left; margin-left: 80px;'>Gew&uumlrze :</h1>";
 
 	body += "<table style = 'text-align: left; width: 80%; margin-left: auto; margin-right: auto;' border = '0' cellpadding = '0' cellspacing = '0'>";
+	body += "<thead>";
+	body += "<tr>";
+	body += "<th style = 'vertical-align: top; width: 100px; text-align: right;'><big>g/Masse</big><br></th>";
+	body += "<th style = 'vertical-align: top; width: 200px;'>";
+	body += "<div style = 'margin-left: 40px;'><big>Gew&uumlrz</big><br></div></th>";
+	body += "<th style = 'vertical-align: top; width: 200px;'>";
+	body += "<div style = 'margin-left: 40px;'><big>Verarbeitung</big><br></div></th>";
+	body += "<th style = 'vertical-align: top; text-align: right;'>";
+	body += "<div style = 'margin-right: 5px;'><big>Ursprungsmenge g/kg</big><br></th>";
+	body += "</tr>";
+	body += "</thead>";
+
 	body += "<tbody>";
 
 	//Gewürzwidget auslesen
@@ -198,24 +219,31 @@ void KWH::erstelleRezeptVorschau2()
 		einh[j] = Gew_Einh->text();
 		preis_peGw[j] = PreisPEGew->text().toDouble();
 		gewuerzpreis += Berechnung.ber_Kostenanteil(menge_g[j], preis_peGw[j]);
+
 		if (j % 2 == 0)
 		{
 			body += "<tr>";
 			body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 100px; text-align: right;'><big>" + QString::number(menge_g[j]) + " " + einh[j] + "</big><br></td>";
-			body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 250px;'>";
+			body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 200px;'>";
 			body += "<div style = 'margin-left: 40px; background-color: rgb(204, 204, 255); '><big>" + gewuerz[j] + "</big><br></div>";
 			body += "</td>";
-			body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255);'><big>" + verarb_gew[j] + "</big><br></td>";
+			body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 200px;'>";
+			body += "<div style = 'margin-left: 40px; background-color: rgb(204, 204, 255);'><big>" + verarb_gew[j] + "</big><br></div></td>";
+			body += "<td style = 'vertical-align: top; text-align: right; background-color: rgb(204, 204, 255);'>";
+			body += "<div style = 'margin-right: 20px; background-color: rgb(204, 204, 255);'><big>" + QString::number(menge_g_p_kg[j]) + " " + einh[j] + "</big><br></td>";
 			body += "</tr>";
 		}
 		else
 		{
 			body += "<tr>";
 			body += "<td style = 'vertical-align: top; width: 100px; text-align: right;'><big>" + QString::number(menge_g[j]) + " " + einh[j] + "</big><br></td>";
-			body += "<td style = 'vertical-align: top; width: 250px;'>";
+			body += "<td style = 'vertical-align: top; width: 200px;'>";
 			body += "<div style = 'margin-left: 40px;'><big>" + gewuerz[j] + "</big><br></div>";
 			body += "</td>";
-			body += "<td style = 'vertical-align: top;'><big>" + verarb_gew[j] + "</big><br></td>";
+			body += "<td style = 'vertical-align: top; width: 200px;'>";
+			body += "<div style = 'margin-left: 40px;'><big>" + verarb_gew[j] + "</big><br></div></td>";
+			body += "<td style = 'vertical-align: top; text-align: right;'>";
+			body += "<div style = 'margin-right: 20px;'><big>" + QString::number(menge_g_p_kg[j]) + " " + einh[j] + "</big><br></td>";
 			body += "</tr>";
 		}
 	}
@@ -227,6 +255,7 @@ void KWH::erstelleRezeptVorschau2()
 		body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 250px;'>";
 		body += "<div style = 'margin-left: 40px; background-color: rgb(204, 204, 255); '><big> </big><br></div>";
 		body += "</td>";
+		body += "<td style = 'margin-left: 40px; background-color: rgb(204, 204, 255);'><big> </big><br></td>";
 		body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255);'><big> </big><br></td>";
 		body += "</tr>";
 	}
@@ -253,7 +282,7 @@ void KWH::erstelleRezeptVorschau2()
 	body += "<tr>";
 	body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 100px; text-align: right;'><big>" + numStrFleisch + " &euro;</big><br></td>";
 	body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 250px;'>";
-	body += "<div style = 'margin-left: 40px; background-color: rgb(204, 204, 255); '><big>Fleisch</big><br></div>";
+	body += "<div style = 'margin-left: 40px; background-color: rgb(204, 204, 255); '><big>Zutaten</big><br></div>";
 	body += "</td>";
 	body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255);'><big> </big><br></td>";
 	body += "</tr>";
@@ -271,7 +300,7 @@ void KWH::erstelleRezeptVorschau2()
 	body += "<tr>";
 	body += "<td style = 'vertical-align: top; width: 100px; text-align: right;'><big>" + numStrGewuerz + " &euro;</big><br></td>";
 	body += "<td style = 'vertical-align: top; width: 250px;'>";
-	body += "<div style = 'margin-left: 40px;'><big>Gewürze</big><br></div>";
+	body += "<div style = 'margin-left: 40px;'><big>Gew&uumlrze</big><br></div>";
 	body += "</td>";
 	body += "<td style = 'vertical-align: top;'><big> </big><br></td>";
 	body += "</tr>";
@@ -286,13 +315,16 @@ void KWH::erstelleRezeptVorschau2()
 
 	QString numStrDarm;
 	numStrDarm.setNum(darmpreis, 'f', 2);
-	body += "<tr>";
-	body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 100px; text-align: right;'><big>" + numStrDarm + " &euro;</big><br></td>";
-	body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 250px;'>";
-	body += "<div style = 'margin-left: 40px; background-color: rgb(204, 204, 255); '><big>Darm</big><br></div>";
-	body += "</td>";
-	body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255);'><big> </big><br></td>";
-	body += "</tr>";
+	if (numStrDarm != "0.00")
+	{
+		body += "<tr>";
+		body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 100px; text-align: right;'><big>" + numStrDarm + " &euro;</big><br></td>";
+		body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255); width: 250px;'>";
+		body += "<div style = 'margin-left: 40px; background-color: rgb(204, 204, 255); '><big>Darm</big><br></div>";
+		body += "</td>";
+		body += "<td style = 'vertical-align: top; background-color: rgb(204, 204, 255);'><big> </big><br></td>";
+		body += "</tr>";
+	}
 	
 	body += "</tbody>";
 	body += "</table>";

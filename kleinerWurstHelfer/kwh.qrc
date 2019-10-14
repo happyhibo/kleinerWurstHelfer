@@ -1,5 +1,11 @@
 <RCC>
     <qresource prefix="/KWH">
-        <file>kwh_icon.ico</file>
+        <file>Resources/buch.png</file>
+        <file>Resources/calculus.png</file>
+        <file>Resources/database.png</file>
+        <file>Resources/kwh_icon.ico</file>
+        <file>Resources/operations.png</file>
+        <file>Resources/sausage.png</file>
+        <file>Resources/kwh.png</file>
     </qresource>
 </RCC>

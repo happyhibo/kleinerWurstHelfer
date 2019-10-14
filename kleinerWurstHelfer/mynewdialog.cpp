@@ -8,6 +8,10 @@ myNewDialog::myNewDialog(QString txtTitel, QString txtZeile1, QString txtZeile2,
 	setupUi(this);
 	this->setWindowModality(Qt::ApplicationModal);
 	this->resize(50, 50);
+	QIcon dlgIcon;
+	dlgIcon.addFile(":/KWH/Resources/kwh.png", QSize(64, 64));
+	setWindowIcon(dlgIcon);
+
 	QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	sizePolicy.setHorizontalStretch(0);
 	sizePolicy.setVerticalStretch(0);

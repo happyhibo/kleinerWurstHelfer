@@ -2,7 +2,7 @@
 #define DEFINITION
 
 // comment this line for release build
-#define DEBUG true
+//#define DEBUG true
 
 //Datenbankvorlage
 #define DB_VORLAGE		"kwh_db_vorlage.s3db"
@@ -10,15 +10,16 @@
 
 //Userdatenbankname
 #ifdef DEBUG
-#define DB_USER_NAME	"kwh_daten_test.s3db"
+#define DB_NAME	"kwh_daten_test.s3db"
 #else
-#define DB_USER_NAME	"kwh_daten.s3db"
+#define DB_NAME	"kwh_daten.s3db"
 #endif
 
 #define DB_VERSION		1
 #define APP_VERSION 	"0.99.0"
 #define APP_NAME		"kleinerWurstHelfer"
 #define APP_KURZNAME	"KWH"
+
 
 //Fehlermeldungen
 #define TYPE_INFO 1
@@ -36,6 +37,8 @@
 #define ERR_SQL_DB_PFAD 104
 #define ERR_SQL_DB_ABFRAGE 105
 #define ERR_SQL_DB_CREATE 106
+#define ERR_DB_KOPIE_NEU_ORT 109
+#define ERR_DB_PFAD_NIO 129
 
 #define ERR_DEBUG_INFO 200
 

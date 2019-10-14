@@ -42,11 +42,11 @@ QString ErrorMessage::getCancelText(int number) {
 			cancelText = "";
 			break;
 		case CANCEL_AKTION:
-			cancelText = trUtf8("Der Vorgang wird abgebrochen.");
+			cancelText = QString::fromLatin1("Der Vorgang wird abgebrochen.");
 			break;
 		case CANCEL_PROGRAM:
 		default:
-			cancelText = trUtf8("Die Anwendung wird beendet.");
+			cancelText = QString::fromLatin1("Die Anwendung wird beendet.");
 			break;
 	}
 	return cancelText;
@@ -56,123 +56,41 @@ QString ErrorMessage::getErrorText(int number) {
 	QString errorText = "";
 	switch (number) {
 		case ERR_SQL_DB_USER_KOPIE:
-			errorText = trUtf8("Vorlagendatenbank konnte nicht kopiert werden");
+			errorText = QString::fromLatin1("Vorlagendatenbank konnte nicht kopiert werden");
 			break;
 		case ERR_SQL_DB_VORLAGE:
-			errorText = trUtf8("Vorlagendatenbank ist nicht vorhanden");
+			errorText = QString::fromLatin1("Vorlagendatenbank ist nicht vorhanden");
 			break;
 		case ERR_SQL_DB_PFAD:
-			errorText = trUtf8("Es Konnte kein Pfad für die Datenbankdatei ermittelt werden");
+			errorText = QString::fromLatin1("Es Konnte kein Pfad für die Datenbankdatei ermittelt werden");
 			break;
 		case ERR_SQL_DB_OPEN:
-			errorText = trUtf8("Kann Datenbank nicht öffnen");
+			errorText = QString::fromLatin1("Kann Datenbank nicht öffnen");
 			break;
-		//case ERR_DB_KOPIE_NEU_ORT:
-		//	errorText = trUtf8("Kann Datenbank nicht an neuen Ort kopieren. Wahrscheinlich keine ausreichende Berechtigung oder es ist schon eine Datenbankdatei vorhanden.\nDer Pfad wird nicht geändert");
-		//	break;
-		//case ERR_DB_DEL_ALT:
-		//	errorText = trUtf8("Kann Datenbank am alten Platz nicht löschen, Die Datei sollte von Hand entfernt werden.");
-		//	break;
 		case ERR_SQL_DB_VERSION:
-			errorText = trUtf8("Kann Version der Datenbank nicht abfragen");
+			errorText = QString::fromLatin1("Kann Version der Datenbank nicht abfragen");
 			break;
-		//case ERR_SQL_DB_PROG_VERALTET:
-		//	errorText = trUtf8("Die Datenbankversion ist zu neu für das Programm. Das Programm muss upgedatet werden.");
-		//	break;
 		case ERR_SQL_DB_ABFRAGE:
-			errorText = trUtf8("Fehler bei SQL-Abfrage");
+			errorText = QString::fromLatin1("Fehler bei SQL-Abfrage");
 			break;
-		//case ERR_VERSION_SUD_V1:
-		//	errorText = trUtf8("Dateien der Sude in Version 1 können leider nicht importiert werden. Bitte speichern Sie die Suddaten vorher noch mit der Vorgängerversion (0.9.4.2) ab.");
-		//	break;
 		case ERR_SQL_DB_CREATE:
-			errorText = trUtf8("Konnte Tabelle nicht erstellen");
+			errorText = QString::fromLatin1("Konnte Tabelle nicht erstellen");
 			break;
 		case ERR_DEBUG_INFO:
-			errorText = trUtf8("INFO");
+			errorText = QString::fromLatin1("INFO");
 			break;
-		//case ERR_SQL_DB_UPDATE_V3_V4:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 3 auf Version 4 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V4_V5:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 4 auf Version 5 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V5_V6:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 5 auf Version 6 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V6_V7:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 6 auf Version 7 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V7_V8:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 7 auf Version 8 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V8_V9:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 8 auf Version 9 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V9_V10:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 9 auf Version 10 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V10_V11:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 10 auf Version 11 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V11_V12:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 11 auf Version 12 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V12_V13:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 12 auf Version 13 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V13_V14:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 13 auf Version 14 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V14_V15:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 14 auf Version 15 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V15_V16:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 15 auf Version 16 updaten");
-		//	break;
-		//case ERR_SQL_DB_UPDATE_V16_V17:
-		//	errorText = trUtf8("Konnte Datenbank nicht von Version 16 auf Version 17 updaten");
-		//	break;
-	    //case ERR_SQL_DB_UPDATE_V17_V18:
-	    //  errorText = trUtf8("Konnte Datenbank nicht von Version 17 auf Version 18 updaten");
-	    //  break;
-	    //case ERR_SQL_DB_UPDATE_V18_V19:
-	    //  errorText = trUtf8("Konnte Datenbank nicht von Version 18 auf Version 19 updaten");
-	    //  break;
-	    //case ERR_SQL_DB_UPDATE_V19_V20:
-	    //  errorText = trUtf8("Konnte Datenbank nicht von Version 19 auf Version 20 updaten");
-	    //  break;
-	    //case ERR_VERSION_UNBEKANNT:
-		//	errorText = trUtf8("Die Datei ist keine gültige Suddatei");
-		//	break;
-		//case ERR_XML_OPEN:
-		//	errorText = trUtf8("Die Datei konnte nicht geöffnet werden");
-		//	break;
-		//case ERR_XML_PARSEN:
-		//	errorText = trUtf8("Fehler beim analysieren der Datei");
-		//	break;
-		//case ERR_DB_KOPIE_BACKUP:
-		//	errorText = trUtf8("Es konnte keine Backupkopie der Datenbank erstellt werden");
-		//	break;
-		//case ERR_DB_KOPIE_RESTORE:
-		//	errorText = trUtf8("Die Datenbank konnte nicht zurückkopiert werden");
-		//	break;
-		//case ERR_DB_BACKUP_VORHANDEN:
-		//	errorText = trUtf8("Die Backupdatei existiert nicht");
-		//	break;
-		//case ERR_DB_ROHSTOFFLISTEN_KOPIE:
-		//	errorText = trUtf8("Die Vorlagendatei für die Rohstoffe konnte nicht kopiert werden.");
-		//	break;
-		//case ERR_DB_PFAD_NIO:
-		//	errorText = trUtf8("Kann Datenbankpfad nicht mehr finden! Der Pfad wird auf den Standardpfad umgestellt und die Vorlagendatenbank angelegt.\nBitte den Pfad zur Datenbankdatei in dein Einstellungen korrigieren.");
-		//	break;
-
+		case ERR_DB_PFAD_NIO:
+			errorText = QString::fromLatin1("Kann Datenbankpfad nicht finden! Der Pfad wird auf den Standardpfad umgestellt und die Vorlagendatenbank angelegt.\nBitte den Pfad zur Datenbankdatei in den Einstellungen korrigieren.");
+			break;
+		case ERR_DB_KOPIE_NEU_ORT:
+			errorText = QString::fromLatin1("Kann Datenbank nicht an neuen Ort kopieren. Datenbankdatei schon vorhanden?.\nDer Pfad wird nicht geändert");
+			break;
 
 		default:
-			errorText = trUtf8("Ein Fehler ist aufgetreten.");
+			errorText = QString::fromLatin1("Ein Fehler ist aufgetreten.");
 			break;
 	}
 	// Fehlernummer Anhängen
-	errorText.append(trUtf8("\n(Fehlernummer: ") + QString::number(number) + trUtf8(")\n"));
+	errorText.append(QString::fromLatin1("\n(Fehlernummer: ") + QString::number(number) + QString::fromLatin1(")\n"));
 	return errorText;
 }
